@@ -1,3 +1,4 @@
+# first exercise
 
 # n = int(input())
 
@@ -26,6 +27,8 @@
 #     if binary_search(array_n, array_m[i], 0, n-1) == None:
 #         print("no", end = ' ')
 #     else: print("yes", end = ' ')
+
+# second exercise
 
 n, m = map(int, input().split())
 
