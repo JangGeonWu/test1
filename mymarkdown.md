@@ -61,5 +61,5 @@ print("hello")
 # Github flavored markdown
 Task list:
 - [x] list1
-- [] list2
-- [] list3
+- [ ] list2
+- [ ] list3
