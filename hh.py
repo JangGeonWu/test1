@@ -16,15 +16,14 @@
 # result = binary_search(array, target, 0, n-1)
 
 # if result == None:
-#     print("원소가 존재하지 않습니다")
+#     print("���Ұ� �������� �ʽ��ϴ�")
 # else:
-#     print(result + 1, "번째에 원소가 존재합니다")
+#     print(result + 1, "��°�� ���Ұ� �����մϴ�")
 
 import sys
 input_data = sys.stdin.readline().rstrip()
 
 print(input_data)
-
 
 
 
