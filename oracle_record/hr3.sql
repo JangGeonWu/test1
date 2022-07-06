@@ -279,40 +279,60 @@ Connected.
 3. 공통적으로 사용되는 파라미터는 Parameter 파일에 지정한다.
 4. Export 작업을 하기 전에 Disk 공간이 충분한지 확인한다.
 ----------------------------export-------------------------------------
+Run SQL Command Line에서 Host입력 후 "C:\Users\user"로 이동해서 실행 -> "C:\Users\user\"에 dmp 파일 생성됨
 -- export 사용 예시 1
 FILE = expdat.dmp                       -> export dump file name(출력 파일 이름)
-TABLES = (scott.s_emp, scott.s_dept)    -> export될 테이블 목록
+TABLES = (hr.emp, hr.dept)              -> export될 테이블 목록
 GRANTS = y                              -> 객체에 대한 '권한'을 export할건지 여부
 INDEXES = y                             -> 테이블들에 대한 인덱스를 export할 것인지 여부
 (Additional Parameter)              LOG -> 모든 export 메시지를 저장할 파일 이름, 지정 안하면 기록 안됨
                                  DIRECT -> 직접 경로로 export, 기본(default) 경로보다 속도가 빠르다.
 -- parameter file method
 PROMPT > exp system/manager parfile = exp1.par
--- command-line method
-PROMPT > exp system/manager tables=(scott.s_emp, scott.s_dept) grants=y indexes=y
---------------------------------------------------------------------------
+-- command-line method(Windows Prompt)
+PROMPT > exp system/manager tables=(hr.emp, hr.dept) grants=y indexes=y
+------------------------------------실행결과-------------------------------------------
+C:\Users\user>exp system/manager tables=(hr.emp, hr.dept) grants=y indexes=y;
+
+Export: Release 11.2.0.2.0 - Production on 수 7월 6 13:38:13 2022
+
+Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+
+
+Connected to: Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production
+Export done in KO16MSWIN949 character set and AL16UTF16 NCHAR character set
+server uses AL32UTF8 character set (possible charset conversion)
+
+About to export specified tables via Conventional Path ...
+Current user changed to HR
+. . exporting table                            EMP         17 rows exported
+. . exporting table                           DEPT          4 rows exported
+EXP-00091: Exporting questionable statistics.
+EXP-00091: Exporting questionable statistics.
+Export terminated successfully with warnings.
+-------------------------------------------------------------------------------------
 -- export 사용 예시 2
-FILE = scott.dmp                        
-TABLES = (s_emp, s_dept)             
+FILE = hr.dmp                        
+TABLES = (emp, dept)             
 ROWS = y                                -> 행(데이터)들이 export 될 것인지 여부
 COMPRESS = y                            -> Fragmentation 된 세그먼트들을 압축할 지 여부
 
 -- parameter file method
-PROMPT > exp scott/tiger parfile = exp2.par
+PROMPT > exp hr/hr parfile = exp2.par
 -- command-line method
-PROMPT > exp scott/tiger file=scott.dmp tables=emp,dept rows=y compress=y
+PROMPT > exp hr/hr file=hr.dmp tables=emp,dept rows=y compress=y
 --------------------------------------------------------------------------
 -- export 사용 예시 3
-FILE = scott_all.dmp                   
-OWNER = scott        -> 사용자객체와 해당객체 내의 데이터, (owner의) 모든 권한, 인덱스가 export된다. 
+FILE = hr_all.dmp                   
+OWNER = hr        -> 사용자객체와 해당객체 내의 데이터, (owner의) 모든 권한, 인덱스가 export된다. 
 GRANTS = y           
 ROWS = y                            
 COMPRESS = y                       
 
 -- parameter file method
-PROMPT > exp scott/tiger parfile = exp3.par
+PROMPT > exp hr/hr parfile = exp3.par
 -- command-line method
-PROMPT > exp scott/tiger file=scott_all.dmp owner=scott grants=y rows=y compress=y
+PROMPT > exp hr/hr file=hr_all.dmp owner=hr grants=y rows=y compress=y;
 --------------------------------------------------------------------------
 -- export 사용 예시 4
 FILE = dba1.dmp                   
@@ -325,33 +345,200 @@ PROMPT > exp system/manager parfile = exp4.par
 -- command-line method
 PROMPT > exp system/manager full=y file=dba1.dmpgrants=y rows=y
 */
-
-----------------------------import-------------------------------------
+------------------------------------import-----------------------------------------
 /*
---------------------------------------------------------------------------
 -- import 사용 예시 1
 FILE = expdat.dmp                           -> import 될 파일명          
 SHOW = n                                    -> import를 실행하는 대신 화면에'만' 표시할 지 여부
 IGNORE = n                                  -> import하면서 발생하는 create 에러를 무시할 지 여부
 GRANTS = y                                  -> 객체 권한 import할 지 여부
-FROMUSER = scott                            -> 읽을 객체들을 가지고 있는 사용자 목록
-TABLES = (s_emp, s_dept)                    -> import 될 테이블 목록
+FROMUSER = hr                               -> 읽을 객체들을 가지고 있는 사용자 목록
+TABLES = (emp, dept)                        -> import 될 테이블 목록
 
 -- parameter file method
-PROMPT > exp system/manager parfile = imp1.par
+PROMPT > imp system/manager parfile = imp1.par
 -- command-line method
-PROMPT > exp system/manager file=expdat.dmp fromuser=scott tables=(s_emp, s_dept)
---------------------------------------------------------------------------
+PROMPT > imp system/manager file=expdat.dmp fromuser=hr tables=(emp, dept)
+--------------------------------------- 실행 결과 -----------------------------------------
+C:\Users\user>imp system/manager file=EXPDAT.dmp fromuser=hr tables=(emp, dept)
+
+Import: Release 11.2.0.2.0 - Production on 수 7월 6 14:15:04 2022
+
+Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+
+
+Connected to: Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production
+
+Export file created by EXPORT:V11.02.00 via conventional path
+
+Warning: the objects were exported by HR, not by you
+
+import done in KO16MSWIN949 character set and AL16UTF16 NCHAR character set
+import server uses AL32UTF8 character set (possible charset conversion)
+. importing HR's objects into SYSTEM
+. importing HR's objects into SYSTEM
+. . importing table                          "EMP"         17 rows imported
+. . importing table                         "DEPT"          4 rows imported
+About to enable constraints...
+Import terminated successfully without warnings.
+
+SQL> select * from emp;
+
+     EMPNO ENAME      JOB               MGR HIREDATE        SAL       COMM     DEPTNO
+---------- ---------- ---------- ---------- -------- ---------- ---------- ----------
+      7369 SMITH      CLERK            7902 80/12/17        800                    20
+      7499 ALLEN      SALESMAN         7698 81/02/20       1600        300         30
+      7521 WARD       SALESMAN         7698 81/02/22       1250        500         30
+      7566 JONES      MANAGER          7839 81/04/02       2975                    20
+      7654 MARTIN     SALESMAN         7698 81/09/28       1250       1400         30
+      7698 BLAKE      MANAGER          7839 81/05/01       2850                    30
+      7782 CLARK      MANAGER          7839 81/06/09       2450                    10
+      7788 SCOTT      ANALYST          7566 87/07/13       3000                    20
+      7839 KING       PRESIDENT             81/11/17       5000                    10
+      7844 TURNER     SALESMAN         7698 81/09/08       1500          0         30
+      7876 ADAMS      CLERK            7788 87/07/13       1100                    20
+
+     EMPNO ENAME      JOB               MGR HIREDATE        SAL       COMM     DEPTNO
+---------- ---------- ---------- ---------- -------- ---------- ---------- ----------
+      7900 JAMES      CLERK            7698 81/12/03        950                    30
+      7902 FORD       ANALYST          7566 81/12/03       3000                    20
+      7934 MILLER     CLERK            7782 82/01/23       1300                    10
+         1 TEST1      SALESMAN         7698 80/12/17        800                    20
+         2 TEST2
+         3 TEST3
+
+SQL> select * from dept;
+
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+        10 ACCOUNTING                   NEW YORK
+        20 RESEARCH                     DALLAS
+        30 SALES                        CHICAGO
+        40 OPERATIONS                   BOSTON
 -- import 사용 예시 2
-FILE = scott.dmp                           
-FROMUSER = scott                           
+FILE = hr.dmp                           
+FROMUSER = hr                           
 TOUSER = tiger                                  -> 테이블을 임포트 할 사용자 이름
 TABLES = (emp, dept) 
 
 -- parameter file method
-PROMPT > exp system/manager parfile = imp2.par
+PROMPT > imp system/manager parfile = imp2.par
 -- command-line method
-PROMPT > exp system/manager file=scott.dmp fromuser=scott touser=tiger tables=(s_emp, s_dept)
+PROMPT > imp system/manager file=hr.dmp fromuser=hr touser=tiger tables=(emp, dept)
+--------------------------------------- 실행 결과 -----------------------------------------
+C:\Users\user>imp system/manager file=hr.dmp fromuser=hr touser=tiger tables=(emp, dept)
+
+Import: Release 11.2.0.2.0 - Production on 수 7월 6 14:17:43 2022
+
+Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+
+
+Connected to: Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production
+
+Export file created by EXPORT:V11.02.00 via conventional path
+
+Warning: the objects were exported by HR, not by you
+
+import done in KO16MSWIN949 character set and AL16UTF16 NCHAR character set
+import server uses AL32UTF8 character set (possible charset conversion)
+. importing HR's objects into TIGER
+. . importing table                          "EMP"         17 rows imported
+. . importing table                         "DEPT"          4 rows imported
+About to enable constraints...
+Import terminated successfully without warnings.
+
+SQL> conn tiger/tiger123
+Connected.
+SQL> show user
+USER is "TIGER"
+SQL> select * from emp;
+
+     EMPNO ENAME      JOB               MGR HIREDATE        SAL       COMM     DEPTNO
+---------- ---------- ---------- ---------- -------- ---------- ---------- ----------
+      7369 SMITH      CLERK            7902 80/12/17        800                    20
+      7499 ALLEN      SALESMAN         7698 81/02/20       1600        300         30
+      7521 WARD       SALESMAN         7698 81/02/22       1250        500         30
+      7566 JONES      MANAGER          7839 81/04/02       2975                    20
+      7654 MARTIN     SALESMAN         7698 81/09/28       1250       1400         30
+      7698 BLAKE      MANAGER          7839 81/05/01       2850                    30
+      7782 CLARK      MANAGER          7839 81/06/09       2450                    10
+      7788 SCOTT      ANALYST          7566 87/07/13       3000                    20
+      7839 KING       PRESIDENT             81/11/17       5000                    10
+      7844 TURNER     SALESMAN         7698 81/09/08       1500          0         30
+      7876 ADAMS      CLERK            7788 87/07/13       1100                    20
+
+     EMPNO ENAME      JOB               MGR HIREDATE        SAL       COMM     DEPTNO
+---------- ---------- ---------- ---------- -------- ---------- ---------- ----------
+      7900 JAMES      CLERK            7698 81/12/03        950                    30
+      7902 FORD       ANALYST          7566 81/12/03       3000                    20
+      7934 MILLER     CLERK            7782 82/01/23       1300                    10
+         1 TEST1      SALESMAN         7698 80/12/17        800                    20
+         2 TEST2
+         3 TEST3
+
+17 rows selected.
+
+SQL> select * from dept;
+
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+        10 ACCOUNTING                   NEW YORK
+        20 RESEARCH                     DALLAS
+        30 SALES                        CHICAGO
+        40 OPERATIONS                   BOSTON
+
+--------------------------------------- 실행 결과 -----------------------------------------
+
+c:\Users\user>imp system/manager file=hr_all.dmp fromuser=hr touser=tiger
+
+Import: Release 11.2.0.2.0 - Production on 수 7월 6 14:20:45 2022
+
+Copyright (c) 1982, 2009, Oracle and/or its affiliates.  All rights reserved.
+
+
+Connected to: Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production
+
+Export file created by EXPORT:V11.02.00 via conventional path
+
+Warning: the objects were exported by HR, not by you
+
+import done in KO16MSWIN949 character set and AL16UTF16 NCHAR character set
+import server uses AL32UTF8 character set (possible charset conversion)
+. importing HR's objects into TIGER
+. . importing table                      "ADDRESS"          2 rows imported
+. . importing table                        "BONUS"          0 rows imported
+. . importing table                      "BONUSES"         16 rows imported
+. . importing table               "CLIENT_ADDRESS"          0 rows imported
+. . importing table                    "COUNTRIES"         25 rows imported
+. . importing table                   "DEPARTMENT"         10 rows imported
+. . importing table                  "DEPARTMENTS"         27 rows imported
+. . importing table                         "DEPT"          4 rows imported
+. . importing table                          "EMP"         17 rows imported
+. . importing table                    "EMPLOYEE2"         17 rows imported
+. . importing table                    "EMPLOYEES"        107 rows imported
+. . importing table                      "EX_TIME"          1 rows imported
+. . importing table                  "HEIGHT_INFO"          5 rows imported
+. . importing table                         "JOBS"         19 rows imported
+. . importing table                  "JOB_HISTORY"         10 rows imported
+. . importing table                    "LOCATIONS"         23 rows imported
+. . importing table                        "PROF1"          5 rows imported
+. . importing table                        "PROF2"          5 rows imported
+. . importing table                    "PROFESSOR"         11 rows imported
+. . importing table               "PROFESSOR_TEMP"          3 rows imported
+. . importing table              "PROFESSOR_TEMP2"          3 rows imported
+. . importing table                      "REGIONS"          4 rows imported
+. . importing table                        "SALES"          2 rows imported
+. . importing table                   "SALES_DATA"         10 rows imported
+. . importing table                     "SALGRADE"          3 rows imported
+. . importing table                      "STUDENT"         16 rows imported
+. . importing table                     "STUD_101"          2 rows imported
+. . importing table                   "STUD_HEAVY"          2 rows imported
+. . importing table                      "SUBJECT"          1 rows imported
+. . importing table                       "SUGANG"          0 rows imported
+. . importing table                    "T_STUDENT"         17 rows imported
+. . importing table                  "WEIGHT_INFO"          0 rows imported
+About to enable constraints...
+Import terminated successfully without warnings.
 */
 
 
